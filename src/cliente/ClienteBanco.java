@@ -2,8 +2,8 @@ package cliente;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.lang.Math;
 
 import servidor.BancoRemoto;
 import servidor.Conta;
@@ -22,7 +22,7 @@ public class ClienteBanco {
         	
             Registry registro = LocateRegistry.getRegistry(host, 20001);
             
-            BancoRemoto stubCliente = (BancoRemoto) registro.lookup("Calc");
+            BancoRemoto stubCliente = (BancoRemoto) registro.lookup("Bank");
 
             System.out.println("Bem vindo ao Banco");
             
@@ -33,6 +33,7 @@ public class ClienteBanco {
                 
                 short opcao = 0;
                 do{
+                    teclado.nextLine();
                     System.out.println("Informe o numero da sua conta: ");
                     String login = teclado.nextLine();
                     System.out.println("Informe sua senha: ");
@@ -50,10 +51,49 @@ public class ClienteBanco {
 
                             switch(opcao){
                                 case 1:
+                                    short opcaoG = 0;
                                     System.out.println("--Gerenciar--");
-                                    ArrayList<Conta> lista = new ArrayList<Conta>(stubCliente.listaContas());
-                                    System.out.println(lista);
-                                    break;
+                                    if(conta.getisFunc()){
+                                        var lista = stubCliente.listaContas();
+                                        System.out.println(lista);
+                                        break;
+                                    }
+                                    else{
+                                        System.out.println("Seus dados: ");
+                                        System.out.println( stubCliente.getDados(conta.getN_conta()));
+                                        System.out.println("01 - Editar dados");
+                                        System.out.println("02 - Excluir Conta");
+                                        System.out.println("03 - Voltar");
+                                        System.out.println("opção: ");
+                                        opcaoG = teclado.nextShort();
+                                        switch (opcaoG) {
+                                            case 1:
+                                                System.out.println("Novo endereço:");
+                                                teclado.nextLine();
+                                                String end = teclado.nextLine();
+                                                System.out.println("Novo numero de telefone:");
+                                                String tel = teclado.nextLine();
+                                                conta = stubCliente.updateDados(conta.getN_conta(), end, tel);
+                                                break;
+                                                
+                                            case 2:
+                                                stubCliente.removerConta(conta.getN_conta());
+                                                System.out.println("Conta removida");
+                                                opcao = 99;
+                                                
+                                                
+                                                break;
+                                            case 3:
+                                                
+                                                break;
+                                        
+                                            default:
+                                                System.out.println("Opção indisponível");
+                                        }
+
+                                        break;
+                                    }
+                                    
                                     
                                 case 2:
                                     System.out.println("--Saque--");
@@ -109,7 +149,51 @@ public class ClienteBanco {
                                     break;
                                 
                                 case 6:
+                                short opcaoI = 0;
                                     System.out.println("--Investimentos--");
+                                    double p = stubCliente.saldoP(conta.getN_conta());
+                                    double r = stubCliente.saldoR(conta.getN_conta());
+                                    System.out.println("Valor Aplivado na Poupança: "+ p);
+                                    System.out.println("Valor Aplivado na Renda Fixa: "+ r);
+
+                                    System.out.println("Simulação renda fixa atual :");
+                                    System.out.println("3 Meses - " + (r * Math.pow(1 + 0.015 ,3) ) );
+                                    System.out.println("6 Meses - " + (r * Math.pow(1 + 0.015 ,6) ) );
+                                    System.out.println("12 Meses - " + (r * Math.pow(1 + 0.015 ,12) ) );
+
+                                    System.out.println("-----------------------------------------------");
+
+                                    System.out.println(" 1 - Aplicar na poupança");
+                                    System.out.println(" 2 - Aplicar na renda fixa");
+                                    System.out.println(" 3 - Voltar");
+                                    opcaoI = teclado.nextShort();
+                                    switch (opcaoI) {
+                                        case 1:
+                                        double saldoI = stubCliente.saldo(conta.getN_conta());
+                                        System.out.println("Saldo atual: " + saldoI);
+                                        System.out.println("Informe quanto deseja aplicar: ");
+                                        double valorI = teclado.nextDouble();
+
+                                        System.out.println("Valor aplicado. Saldo atual na poupança: " + stubCliente.depositarP(conta.getN_conta(), valorI));
+
+                                            
+                                            break;
+                                        case 2:
+                                            double saldoR = stubCliente.saldo(conta.getN_conta());
+                                            System.out.println("Saldo atual: " + saldoR);
+                                            System.out.println("Informe quanto deseja aplicar: ");
+                                            double valorR = teclado.nextDouble();
+
+                                            System.out.println("Valor aplicado. Saldo atual na Remda Fixa: " + stubCliente.depositarR(conta.getN_conta(), valorR));
+                                            break;
+
+                                        case 3:
+                                            break;
+                                    
+                                        default:
+                                            break;
+                                    }
+
                                     break;
                                 
                                 case 99:
@@ -129,12 +213,6 @@ public class ClienteBanco {
            
             
             
-            //System.out.println("login com sucesso?  " + stubCliente.logar("0123456", "1515"));
-            
-            //System.out.println("A subtração entre 20 e 10 é: " + stubCliente.subtrair(20, 10));
-            
-            //System.out.println("A multiplicação entre 20 e 10 é: " + stubCliente.multiplicar(20, 10));
-           
             
             
         } catch (Exception e) {

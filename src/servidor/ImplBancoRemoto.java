@@ -71,13 +71,88 @@ public class ImplBancoRemoto implements BancoRemoto{
 	@Override
 	public double saldo(String n_conta) throws RemoteException {
 		Optional<Conta> conta = listcontas.stream().filter(c -> c.getN_conta().equals(n_conta)).findAny();
-				
+		System.out.println("USUARIO: " + conta.get().getNome_cliente() + " CHECK_SALDO: ");	
 		return conta.get().getSaldo();
+	}
+
+	@Override
+	public double saldoP(String n_conta) throws RemoteException {
+		Optional<Conta> conta = listcontas.stream().filter(c -> c.getN_conta().equals(n_conta)).findAny();
+		System.out.println("USUARIO: " + conta.get().getNome_cliente() + " CHECK_SALDO_P: ");	
+		return conta.get().getPoupanca();
+	}
+
+	@Override
+	public double saldoR(String n_conta) throws RemoteException {
+		Optional<Conta> conta = listcontas.stream().filter(c -> c.getN_conta().equals(n_conta)).findAny();
+		System.out.println("USUARIO: " + conta.get().getNome_cliente() + " CHECK_SALDO_R: ");	
+		return conta.get().getRenda_fixa();
 	}
 	
 	@Override
 	public ArrayList<Conta> listaContas() throws RemoteException{
 		return listcontas;
+	}
+
+	@Override
+	public String getDados(String n_conta) throws RemoteException{
+		Optional<Conta> conta = listcontas.stream().filter(c -> c.getN_conta().equals(n_conta)).findAny();
+		if(conta.isPresent()){
+			return conta.get().toString();
+		}
+		return null;
+
+	}
+
+	@Override
+	public Conta updateDados(String n_conta, String end, String tel) throws RemoteException{
+		Optional<Conta> conta = listcontas.stream().filter(c -> c.getN_conta().equals(n_conta)).findAny();
+		if(conta.isPresent()){
+			conta.get().setTelefone(tel);
+			conta.get().setEndereco(end);
+			System.out.println("USUARIO: " + conta.get().getNome_cliente() + " EDIT_DADOS: ");
+			return conta.get();
+		}
+		else{
+
+			return null;
+		}
+	}
+
+	@Override
+	public void removerConta(String n_conta) throws RemoteException{
+		Optional<Conta> conta = listcontas.stream().filter(c -> c.getN_conta().equals(n_conta)).findAny();
+		System.out.println("USUARIO: " + conta.get().getNome_cliente() + " DELETE_CONTA: ");
+		listcontas.remove(conta.get());
+
+	}
+
+	@Override
+	public double depositarP(String n_conta, double valor) throws RemoteException{
+		Optional<Conta> conta = listcontas.stream().filter(c -> c.getN_conta().equals(n_conta)).findAny();
+		if(conta.isPresent()){
+			if(conta.get().getSaldo() >= valor){
+				System.out.println("USUARIO: " + conta.get().getNome_cliente() + " AP_POUPANÇA: "+ valor );
+				double saldoP = conta.get().depositarP(valor);
+				
+				return saldoP;
+			}
+		}	
+		return 0.0;
+	}
+
+	@Override
+    public double depositarR(String n_conta, double valor) throws RemoteException{
+		Optional<Conta> conta = listcontas.stream().filter(c -> c.getN_conta().equals(n_conta)).findAny();
+		if(conta.isPresent()){
+			if(conta.get().getSaldo() >= valor){
+				System.out.println("USUARIO: " + conta.get().getNome_cliente() + " AP_POUPANÇA: "+ valor );
+				double saldoR = conta.get().depositarR(valor);
+				
+				return saldoR;
+			}
+		}	
+		return 0.0;
 	}
 
 

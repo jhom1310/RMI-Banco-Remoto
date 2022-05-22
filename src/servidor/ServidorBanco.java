@@ -25,11 +25,9 @@ public class ServidorBanco {
 			Registry registro = LocateRegistry.getRegistry(
 					InetAddress.getLocalHost().getHostAddress(), 
 					20001);
+
 			
-			/* O método bind é então chamado no stub do registro para vincular 
-			 * o stub do objeto remoto ao nome "Hello" no registro.*/
-			
-			registro.bind("Calc", skeleton);
+			registro.bind("Bank", skeleton);
 
 			System.err.println("Servidor pronto:");
 			

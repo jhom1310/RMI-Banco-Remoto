@@ -12,6 +12,8 @@ public class Conta implements Serializable{
     private String telefone;
     private String senha;
     private double saldo;
+    private double poupanca;
+    private double renda_fixa;
     private boolean isFunc;
 
 
@@ -25,6 +27,24 @@ public class Conta implements Serializable{
         this.senha = senha;
         this.saldo = saldo;
         this.isFunc = isFunc;
+        this.poupanca = 0.0;
+        this.renda_fixa = 0.0;
+    }
+
+    public double depositarP(double valor){
+        if(saldo>= valor){
+            this.poupanca += valor;
+            this.saldo -= valor;
+        }
+        return this.poupanca;
+    }
+
+    public double depositarR(double valor){
+        if(saldo>= valor){
+            this.renda_fixa += valor;
+            this.saldo -= valor;
+        }
+        return this.renda_fixa;
     }
 
     public double depositar(double valor){
@@ -49,6 +69,23 @@ public class Conta implements Serializable{
     public boolean getisFunc() {
         return this.isFunc;
     }
+
+    public double getRenda_fixa() {
+        return this.renda_fixa;
+    }
+
+    public void setRenda_fixa(double renda) {
+        this.renda_fixa = renda;
+    }
+
+    public double getPoupanca() {
+        return this.poupanca;
+    }
+
+    public void setPoupanca(double poupanca) {
+        this.poupanca = poupanca;
+    }
+
     public double getSaldo() {
         return this.saldo;
     }
@@ -115,14 +152,13 @@ public class Conta implements Serializable{
 
     @Override
     public String toString() {
-        return "{" +
-            " n_conta='" + getN_conta() + "'" +
-            ", cpf='" + getCpf() + "'" +
-            ", nome_cliente='" + getNome_cliente() + "'" +
-            ", endereco='" + getEndereco() + "'" +
-            ", data_nasc='" + getData_nasc() + "'" +
-            ", telefone='" + getTelefone() + "'" +
-            "}";
+        return 
+            "numero da conta= " + getN_conta() + "\n" +
+            "cpf= " + getCpf() + "'" + "\n" +
+            "nome do cliente= " + getNome_cliente() +  "\n" +
+            "endereco= " + getEndereco() +  "\n" +
+            "data nasc= " + getData_nasc() +  "\n" +
+            "telefone= " + getTelefone() +  "\n";
     }
 
 
